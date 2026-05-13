@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed — Casuarina @ Meru</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar scrolled" id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="logo">
+                <span class="logo-mark">C</span>
+                <span class="logo-text">CASUARINA<small>@ MERU</small></span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="rooms.html">Rooms</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+            </ul>
+            <div class="nav-auth">
+                <button class="btn-ghost" id="loginBtn">Sign In</button>
+            </div>
+        </div>
+    </nav>
+
+    <div style="padding-top: 100px; min-height: 100vh; background: var(--color-bg-alt);">
+        <div class="container">
+            <div class="confirmation-card" id="confirmationContent">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border: none; padding: 0;">
+                <p>© 2026 Hotel Casuarina @ Meru. Academic Project — BCS2073 Software Engineering, QIU.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/user-module.js"></script>
+    <script src="../js/booking-module.js"></script>
+    <script src="../js/room-module.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const bookingId = params.get('bookingId') || sessionStorage.getItem('lastBookingId');
+        const booking = BookingModule.getBookingById(bookingId);
+
+        const el = document.getElementById('confirmationContent');
+        if (!booking) {
+            el.innerHTML = `
+                <div class="confirmation-icon" style="background: #999;">!</div>
+                <h1>No booking found</h1>
+                <p>Please <a href="rooms.html" style="color: var(--color-accent)">make a reservation</a> first.</p>
+            `;
+        } else {
+            el.innerHTML = `
+                <div class="confirmation-icon">✓</div>
+                <h1>Booking <em>confirmed</em>!</h1>
+                <p style="color: var(--color-muted); font-size: 1.05rem;">
+                    Thank you, <strong>${booking.guestName}</strong>. We look forward to welcoming you to Casuarina @ Meru.
+                </p>
+                <div class="booking-id">${booking.id}</div>
+                <p style="font-size: 0.85rem; color: var(--color-muted); margin-bottom: 2rem;">
+                    A confirmation email has been sent to <strong>${booking.guestEmail}</strong>
+                </p>
+
+                <div style="text-align: left; background: var(--color-bg-alt); padding: 2rem; border-radius: var(--radius-lg); margin: 2rem 0;">
+                    <h3 style="font-family: var(--font-body); font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.5rem; color: var(--color-muted);">Reservation Details</h3>
+                    <div class="summary-row"><span>Room</span><span>${booking.roomName}</span></div>
+                    <div class="summary-row"><span>Check-in</span><span>${booking.checkIn}</span></div>
+                    <div class="summary-row"><span>Check-out</span><span>${booking.checkOut}</span></div>
+                    <div class="summary-row"><span>Nights</span><span>${booking.nights}</span></div>
+                    <div class="summary-row"><span>Guests</span><span>${booking.guests}</span></div>
+                    <div class="summary-row"><span>Payment</span><span>${booking.paymentMethod.replace('_', ' ').toUpperCase()}</span></div>
+                    <div class="summary-row total"><span>Total Paid</span><span>RM ${booking.pricing.total.toFixed(2)}</span></div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-top: 2rem;">
+                    <a href="my-bookings.html" class="btn-outline">View My Bookings</a>
+                    <a href="../index.html" class="btn-primary">Back to Home</a>
+                </div>
+            `;
+        }
+
+        const loginBtn = document.getElementById('loginBtn');
+        const u = UserModule.getCurrentUser();
+        if (u) loginBtn.textContent = `Hi, ${u.name.split(' ')[0]}`;
+    </script>
+</body>
+</html>

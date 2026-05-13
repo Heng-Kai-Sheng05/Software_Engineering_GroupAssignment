@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings — Casuarina @ Meru</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="logo">
+                <span class="logo-mark">C</span>
+                <span class="logo-text">CASUARINA<small>@ MERU</small></span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="rooms.html">Rooms</a></li>
+                <li><a href="search.html">Reserve</a></li>
+                <li><a href="my-bookings.html" class="active">My Bookings</a></li>
+            </ul>
+            <div class="nav-auth">
+                <button class="btn-ghost" id="loginBtn">Sign In</button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <span class="section-tag">— Your Stays</span>
+            <h1>My <em>bookings</em></h1>
+            <p>View, modify, or cancel your reservations</p>
+        </div>
+    </header>
+
+    <section style="padding: 4rem 0 8rem; background: var(--color-bg);">
+        <div class="container">
+            <div id="bookingsContainer" class="bookings-list"></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border: none; padding: 0;">
+                <p>© 2026 Hotel Casuarina @ Meru. Academic Project — BCS2073 Software Engineering, QIU.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/user-module.js"></script>
+    <script src="../js/booking-module.js"></script>
+    <script src="../js/room-module.js"></script>
+    <script>
+        function renderBookings() {
+            const container = document.getElementById('bookingsContainer');
+            const user = UserModule.getCurrentUser();
+            // For demo: show all bookings if not logged in (so testing is easy)
+            const bookings = user 
+                ? BookingModule.getUserBookings(user.id).concat(
+                    BookingModule.getAllBookings().filter(b => b.userId === 'GUEST')
+                  )
+                : BookingModule.getAllBookings();
+
+            if (bookings.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>No bookings yet</h3>
+                        <p>You haven't made any reservations.</p>
+                        <a href="rooms.html" class="btn-primary" style="margin-top: 2rem; display: inline-block;">Browse Rooms</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort: most recent first
+            bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            container.innerHTML = bookings.map(b => `
+                <div class="booking-item">
+                    <div>
+                        <div style="display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1rem;">
+                            <div style="width: 100px; height: 100px; background: url('${b.roomImage}') center/cover; border-radius: 8px; flex-shrink: 0;"></div>
+                            <div>
+                                <h4>${b.roomName}</h4>
+                                <p style="color: var(--color-muted); font-size: 0.9rem; margin: 0.25rem 0;">
+                                    ${b.checkIn} → ${b.checkOut} · ${b.nights} night${b.nights > 1 ? 's' : ''} · ${b.guests} guest${b.guests > 1 ? 's' : ''}
+                                </p>
+                                <p style="font-size: 0.8rem; color: var(--color-muted); font-family: monospace;">${b.id}</p>
+                                <span class="booking-status status-${b.status}">${b.status}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 2rem; align-items: center; padding-top: 1rem; border-top: 1px solid var(--color-line); font-size: 0.85rem;">
+                            <div><span style="color: var(--color-muted);">Guest:</span> <strong>${b.guestName}</strong></div>
+                            <div><span style="color: var(--color-muted);">Total:</span> <strong>RM ${b.pricing.total.toFixed(2)}</strong></div>
+                        </div>
+                    </div>
+                    <div class="booking-actions">
+                        ${b.status === 'confirmed' ? `
+                            <button class="btn-small" onclick="modifyDates('${b.id}')">Modify Dates</button>
+                            <button class="btn-small danger" onclick="cancelBooking('${b.id}')">Cancel</button>
+                        ` : `
+                            <span style="font-size: 0.8rem; color: var(--color-muted);">Cancelled on ${new Date(b.cancelledAt).toLocaleDateString()}</span>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function cancelBooking(id) {
+            if (!confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) return;
+            const result = BookingModule.cancelBooking(id);
+            alert(result.success ? '✓ ' + result.message : '⚠️ ' + result.message);
+            renderBookings();
+        }
+
+        function modifyDates(id) {
+            const booking = BookingModule.getBookingById(id);
+            if (!booking) return;
+            const newIn = prompt('New check-in date (YYYY-MM-DD):', booking.checkIn);
+            if (!newIn) return;
+            const newOut = prompt('New check-out date (YYYY-MM-DD):', booking.checkOut);
+            if (!newOut) return;
+            const result = BookingModule.modifyBooking(id, newIn, newOut);
+            alert(result.success ? '✓ Booking modified successfully' : '⚠️ ' + result.message);
+            renderBookings();
+        }
+
+        window.cancelBooking = cancelBooking;
+        window.modifyDates = modifyDates;
+
+        renderBookings();
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        const loginBtn = document.getElementById('loginBtn');
+        const u = UserModule.getCurrentUser();
+        if (u) loginBtn.textContent = `Hi, ${u.name.split(' ')[0]}`;
+        loginBtn.addEventListener('click', () => {
+            if (UserModule.isLoggedIn()) {
+                if (confirm('Sign out?')) { UserModule.logout(); location.reload(); }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Rooms — Casuarina @ Meru</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="logo">
+                <span class="logo-mark">C</span>
+                <span class="logo-text">CASUARINA<small>@ MERU</small></span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="rooms.html" class="active">Rooms</a></li>
+                <li><a href="search.html">Reserve</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+            </ul>
+            <div class="nav-auth">
+                <button class="btn-ghost" id="loginBtn">Sign In</button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <span class="section-tag">— Accommodations</span>
+            <h1>Rooms & <em>suites</em></h1>
+            <p>Choose from our curated collection of 146 elegantly designed rooms</p>
+        </div>
+    </header>
+
+    <section class="rooms-preview" style="background: var(--color-bg); padding: 4rem 0 8rem;">
+        <div class="container">
+            <div class="rooms-grid" id="roomsContainer"></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border: none; padding: 0;">
+                <p>© 2026 Hotel Casuarina @ Meru. Academic Project — BCS2073 Software Engineering, QIU.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/user-module.js"></script>
+    <script src="../js/room-module.js"></script>
+    <script>
+        // Fix paths for nested pages
+        const original = RoomModule.createRoomCard;
+        RoomModule.createRoomCard = function(room) {
+            return original(room).replace(/pages\//g, '');
+        };
+
+        RoomModule.renderRooms('roomsContainer', RoomModule.getAllRooms());
+
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        const loginBtn = document.getElementById('loginBtn');
+        const user = UserModule.getCurrentUser();
+        if (user) loginBtn.textContent = `Hi, ${user.name.split(' ')[0]}`;
+        loginBtn.addEventListener('click', () => {
+            if (UserModule.isLoggedIn()) {
+                if (confirm('Sign out?')) { UserModule.logout(); location.reload(); }
+            }
+        });
+    </script>
+</body>
+</html>

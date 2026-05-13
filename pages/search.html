@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserve Your Stay — Casuarina @ Meru</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="logo">
+                <span class="logo-mark">C</span>
+                <span class="logo-text">CASUARINA<small>@ MERU</small></span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="../index.html">Home</a></li>
+                <li><a href="rooms.html">Rooms</a></li>
+                <li><a href="search.html" class="active">Reserve</a></li>
+                <li><a href="my-bookings.html">My Bookings</a></li>
+            </ul>
+            <div class="nav-auth">
+                <button class="btn-ghost" id="loginBtn">Sign In</button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="page-header">
+        <div class="container">
+            <span class="section-tag">— Reservations</span>
+            <h1>Find your <em>perfect</em> room</h1>
+            <p>Browse our selection and reserve your ideal stay at Casuarina @ Meru</p>
+        </div>
+    </header>
+
+    <!-- Search Filter Bar -->
+    <section class="quick-search" style="margin-top: -50px;">
+        <div class="container">
+            <div class="search-card">
+                <form id="quickSearchForm" class="search-form">
+                    <div class="form-group">
+                        <label>Check-In</label>
+                        <input type="date" id="checkIn" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Check-Out</label>
+                        <input type="date" id="checkOut" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Guests</label>
+                        <select id="guests">
+                            <option value="1">1 Adult</option>
+                            <option value="2" selected>2 Adults</option>
+                            <option value="3">3 Adults</option>
+                            <option value="4">4 Adults</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Room Type</label>
+                        <select id="roomType">
+                            <option value="all">All Types</option>
+                            <option value="deluxe">Deluxe</option>
+                            <option value="premier">Premier</option>
+                            <option value="suite">Suite</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary btn-search">Filter →</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="rooms-preview" style="background: var(--color-bg); padding: 4rem 0 8rem;">
+        <div class="container">
+            <div id="resultsMeta" style="margin-bottom: 2rem; color: var(--color-muted); font-size: 0.95rem;"></div>
+            <div class="rooms-grid" id="roomsContainer"></div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom" style="border: none; padding: 0;">
+                <p>© 2026 Hotel Casuarina @ Meru. Academic Project — BCS2073 Software Engineering, QIU.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../js/data.js"></script>
+    <script src="../js/user-module.js"></script>
+    <script src="../js/room-module.js"></script>
+    <script src="../js/booking-module.js"></script>
+    <script>
+        // Update room card links for nested path
+        const originalCreate = RoomModule.createRoomCard;
+        RoomModule.createRoomCard = function(room) {
+            const html = originalCreate(room);
+            return html.replace(/pages\//g, '');
+        };
+
+        // Restore criteria from sessionStorage if available
+        const saved = sessionStorage.getItem('searchCriteria');
+        const criteria = saved ? JSON.parse(saved) : {};
+
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        const dayAfter = new Date(today);
+        dayAfter.setDate(today.getDate() + 2);
+
+        document.getElementById('checkIn').value = criteria.checkIn || tomorrow.toISOString().split('T')[0];
+        document.getElementById('checkOut').value = criteria.checkOut || dayAfter.toISOString().split('T')[0];
+        document.getElementById('checkIn').min = today.toISOString().split('T')[0];
+        if (criteria.guests) document.getElementById('guests').value = criteria.guests;
+        if (criteria.roomType) document.getElementById('roomType').value = criteria.roomType;
+
+        function performSearch() {
+            const c = {
+                checkIn: document.getElementById('checkIn').value,
+                checkOut: document.getElementById('checkOut').value,
+                guests: document.getElementById('guests').value,
+                roomType: document.getElementById('roomType').value
+            };
+            const rooms = RoomModule.searchRooms(c);
+            const dateCheck = RoomModule.validateDates(c.checkIn, c.checkOut);
+            const nights = dateCheck.valid ? dateCheck.nights : 0;
+            document.getElementById('resultsMeta').innerHTML = 
+                `<strong>${rooms.length}</strong> room${rooms.length !== 1 ? 's' : ''} available — 
+                ${nights} night${nights !== 1 ? 's' : ''} · ${c.guests} guest${c.guests > 1 ? 's' : ''}`;
+            RoomModule.renderRooms('roomsContainer', rooms);
+            sessionStorage.setItem('searchCriteria', JSON.stringify(c));
+        }
+
+        performSearch();
+
+        document.getElementById('quickSearchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            performSearch();
+        });
+
+        // Navbar
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        // Auth UI
+        const loginBtn = document.getElementById('loginBtn');
+        const user = UserModule.getCurrentUser();
+        if (user) loginBtn.textContent = `Hi, ${user.name.split(' ')[0]}`;
+        loginBtn.addEventListener('click', () => {
+            if (UserModule.isLoggedIn()) {
+                if (confirm('Sign out?')) { UserModule.logout(); location.reload(); }
+            } else {
+                window.location.href = '../index.html#login';
+            }
+        });
+    </script>
+</body>
+</html>

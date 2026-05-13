@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Casuarina @ Meru — Luxury Lifestyle Hotel in Ipoh</title>
+    <meta name="description" content="A contemporary 4-star lifestyle hotel in Bandar Meru Raya, Ipoh. 146 elegantly designed rooms and suites.">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- ========================================
+         COMPONENT: Navigation Bar (Reusable)
+         CBSE Module: ui-navigation
+    ========================================= -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-mark">C</span>
+                <span class="logo-text">CASUARINA<small>@ MERU</small></span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="pages/rooms.html">Rooms</a></li>
+                <li><a href="pages/search.html">Reserve</a></li>
+                <li><a href="pages/my-bookings.html">My Bookings</a></li>
+                <li><a href="#facilities">Facilities</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="nav-auth">
+                <button class="btn-ghost" id="loginBtn">Sign In</button>
+                <button class="btn-primary" id="reserveBtn" onclick="window.location.href='pages/search.html'">Book Now</button>
+            </div>
+            <button class="mobile-toggle" id="mobileToggle">☰</button>
+        </div>
+    </nav>
+
+    <!-- ========================================
+         COMPONENT: Hero Section
+    ========================================= -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <span class="hero-tag">★ ★ ★ ★  · IPOH, PERAK</span>
+            <h1 class="hero-title">
+                Where <em>elegance</em><br>
+                meets <em>tranquility</em>
+            </h1>
+            <p class="hero-subtitle">
+                A contemporary 4-star lifestyle sanctuary nestled in the vibrant township of Bandar Meru Raya, 
+                offering 146 elegantly designed rooms and suites.
+            </p>
+            <div class="hero-actions">
+                <button class="btn-primary btn-lg" onclick="window.location.href='pages/search.html'">
+                    Check Availability →
+                </button>
+                <button class="btn-outline btn-lg" onclick="document.getElementById('rooms-preview').scrollIntoView({behavior:'smooth'})">
+                    Explore Rooms
+                </button>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         COMPONENT: Quick Search Widget
+         CBSE Module: search-module (reusable)
+    ========================================= -->
+    <section class="quick-search">
+        <div class="container">
+            <div class="search-card">
+                <h3>Reserve Your Stay</h3>
+                <form id="quickSearchForm" class="search-form">
+                    <div class="form-group">
+                        <label>Check-In</label>
+                        <input type="date" id="checkIn" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Check-Out</label>
+                        <input type="date" id="checkOut" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Guests</label>
+                        <select id="guests">
+                            <option value="1">1 Adult</option>
+                            <option value="2" selected>2 Adults</option>
+                            <option value="3">3 Adults</option>
+                            <option value="4">4 Adults</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Room Type</label>
+                        <select id="roomType">
+                            <option value="all">All Types</option>
+                            <option value="deluxe">Deluxe</option>
+                            <option value="premier">Premier</option>
+                            <option value="suite">Suite</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary btn-search">Search →</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION: About / Welcome
+    ========================================= -->
+    <section class="about-section">
+        <div class="container about-grid">
+            <div class="about-image">
+                <div class="img-frame"></div>
+                <div class="stat-badge">
+                    <strong>146</strong>
+                    <span>Rooms & Suites</span>
+                </div>
+            </div>
+            <div class="about-content">
+                <span class="section-tag">— About The Hotel</span>
+                <h2 class="section-title">A modern retreat in the<br>heart of <em>Ipoh</em></h2>
+                <p>
+                    Hotel Casuarina @ Meru is a contemporary 4-star lifestyle hotel located in the vibrant 
+                    township of Bandar Meru Raya. Recognised for its spacious accommodations, diverse dining options, 
+                    and excellent facilities, we serve both leisure guests seeking relaxation and business travellers 
+                    requiring professional services.
+                </p>
+                <p>
+                    Strategically located near the Amanjaya Bus Terminal, the hotel provides easy access for domestic 
+                    and international travellers. Discover the cultural treasures of Movie Animation Park Studios (MAPS) 
+                    and the Perak Tong Cave Temple, all within reach.
+                </p>
+                <div class="about-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">✦</div>
+                        <div>
+                            <h4>Prime Location</h4>
+                            <p>Bandar Meru Raya, Ipoh</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✦</div>
+                        <div>
+                            <h4>4-Star Rated</h4>
+                            <p>Lifestyle Hospitality</p>
+                        </div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">✦</div>
+                        <div>
+                            <h4>24/7 Service</h4>
+                            <p>Always at your service</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION: Rooms Preview
+         CBSE Module: room-display (reusable card component)
+    ========================================= -->
+    <section class="rooms-preview" id="rooms-preview">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">— Our Accommodations</span>
+                <h2 class="section-title">Stay in <em>style</em></h2>
+                <p class="section-subtitle">Choose from our curated selection of elegantly designed rooms and suites</p>
+            </div>
+            <div class="rooms-grid" id="roomsContainer">
+                <!-- Cards rendered dynamically by js/room-module.js -->
+            </div>
+            <div class="section-cta">
+                <a href="pages/rooms.html" class="btn-outline btn-lg">View All Rooms →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION: Facilities
+    ========================================= -->
+    <section class="facilities" id="facilities">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">— World-Class Facilities</span>
+                <h2 class="section-title">Everything you <em>need</em></h2>
+            </div>
+            <div class="facilities-grid">
+                <div class="facility-card">
+                    <div class="facility-icon">🏊</div>
+                    <h4>Swimming Pool</h4>
+                    <p>Refresh and unwind in our outdoor pool with panoramic views</p>
+                </div>
+                <div class="facility-card">
+                    <div class="facility-icon">🍽️</div>
+                    <h4>Fine Dining</h4>
+                    <p>Diverse culinary experiences from local Malay to international cuisine</p>
+                </div>
+                <div class="facility-card">
+                    <div class="facility-icon">💪</div>
+                    <h4>Fitness Center</h4>
+                    <p>State-of-the-art gym equipment available 24/7</p>
+                </div>
+                <div class="facility-card">
+                    <div class="facility-icon">💼</div>
+                    <h4>Business Center</h4>
+                    <p>Meeting rooms and event spaces for corporate needs</p>
+                </div>
+                <div class="facility-card">
+                    <div class="facility-icon">🚗</div>
+                    <h4>Free Parking</h4>
+                    <p>Complimentary on-site parking for all guests</p>
+                </div>
+                <div class="facility-card">
+                    <div class="facility-icon">📶</div>
+                    <h4>High-Speed Wi-Fi</h4>
+                    <p>Complimentary high-speed internet throughout the property</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         SECTION: Nearby Attractions
+    ========================================= -->
+    <section class="attractions">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">— Discover Ipoh</span>
+                <h2 class="section-title">Nearby <em>attractions</em></h2>
+            </div>
+            <div class="attractions-grid">
+                <div class="attraction-card">
+                    <div class="attraction-img attraction-1"></div>
+                    <div class="attraction-info">
+                        <h4>Movie Animation Park Studios</h4>
+                        <span>15 mins drive</span>
+                    </div>
+                </div>
+                <div class="attraction-card">
+                    <div class="attraction-img attraction-2"></div>
+                    <div class="attraction-info">
+                        <h4>Perak Tong Cave Temple</h4>
+                        <span>10 mins drive</span>
+                    </div>
+                </div>
+                <div class="attraction-card">
+                    <div class="attraction-img attraction-3"></div>
+                    <div class="attraction-info">
+                        <h4>Amanjaya Bus Terminal</h4>
+                        <span>5 mins drive</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========================================
+         FOOTER (Reusable Component)
+    ========================================= -->
+    <footer class="footer" id="contact">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <span class="logo-mark">C</span>
+                        <span class="logo-text">CASUARINA<small>@ MERU</small></span>
+                    </div>
+                    <p>A contemporary 4-star lifestyle hotel in the heart of Bandar Meru Raya, Ipoh.</p>
+                </div>
+                <div class="footer-col">
+                    <h5>Explore</h5>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="pages/rooms.html">Rooms</a></li>
+                        <li><a href="pages/search.html">Reservations</a></li>
+                        <li><a href="#facilities">Facilities</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Contact</h5>
+                    <ul>
+                        <li>Bandar Meru Raya, 30020 Ipoh, Perak</li>
+                        <li>+605 526 8888</li>
+                        <li>reservations@casuarinameru.com.my</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Newsletter</h5>
+                    <p>Subscribe for exclusive offers</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Your email">
+                        <button type="submit">→</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Hotel Casuarina @ Meru. Academic Project — BCS2073 Software Engineering, QIU.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal Component -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <button class="modal-close" id="closeModal">×</button>
+            <h3>Welcome Back</h3>
+            <p class="modal-sub">Sign in to manage your reservations</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" required placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" required placeholder="Enter password">
+                </div>
+                <button type="submit" class="btn-primary btn-full">Sign In</button>
+                <p class="modal-footer">New here? <a href="#" id="switchToRegister">Create account</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts: CBSE modular structure -->
+    <script src="js/data.js"></script>
+    <script src="js/user-module.js"></script>
+    <script src="js/room-module.js"></script>
+    <script src="js/booking-module.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
