@@ -1,4 +1,4 @@
-# Hotel Casuarina @ Meru — Online Reservation System
+# Hotel Quest — Online Reservation System
 
 **Course:** BCS2073 Software Engineering  
 **Project:** Developing and Validating Software System via GitFlow  
@@ -142,4 +142,4 @@ Suggested branch division for 4-member team:
 
 ---
 
-© 2026 Hotel Casuarina @ Meru — Academic Project for BCS2073 Software Engineering, QIU.
+© 2026 Hotel Quest — Academic Project for BCS2073 Software Engineering, QIU.
