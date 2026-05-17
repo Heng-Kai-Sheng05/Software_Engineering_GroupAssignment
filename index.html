@@ -28,7 +28,7 @@
             </ul>
             <div class="nav-auth">
                 <button class="btn-ghost" id="loginBtn">Sign In</button>
-                <button class="btn-primary" id="reserveBtn" onclick="window.location.href='pages/search.html'">Book Now</button>
+                <button class="btn-primary" id="reserveBtn" onclick="window.location.href='pages/rooms.html'">Book Now</button>
             </div>
             <button class="mobile-toggle" id="mobileToggle">☰</button>
         </div>
@@ -51,7 +51,7 @@
                 offering 146 elegantly designed rooms and suites.
             </p>
             <div class="hero-actions">
-                <button class="btn-primary btn-lg" onclick="window.location.href='pages/search.html'">
+                <button class="btn-primary btn-lg" onclick="document.querySelector('.quick-search').scrollIntoView({behavior:'smooth', block:'center'})">
                     Check Availability →
                 </button>
                 <button class="btn-outline btn-lg" onclick="document.getElementById('rooms-preview').scrollIntoView({behavior:'smooth'})">
