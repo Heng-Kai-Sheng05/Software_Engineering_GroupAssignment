@@ -14,7 +14,7 @@
        Add your site origin (e.g. http://localhost:5500) to "Authorized JavaScript origins".
        If left as the placeholder, the Google button shows a config notice and
        only email/password sign-in is available. */
-    const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com';
+    const GOOGLE_CLIENT_ID = '23625563317-bsa0330h53pk5u5sv7enf7glng4gopi3.apps.googleusercontent.com';
 
     const MODAL_TEMPLATE =
         '<div class="modal" id="authModal" aria-hidden="true">' +
