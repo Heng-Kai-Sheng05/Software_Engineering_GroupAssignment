@@ -7,7 +7,7 @@
 const ROOMS_DATA = [
     {
         id: 'RM-DLX-001',
-        name: 'Deluxe Room',
+        name: 'Queen',
         type: 'deluxe',
         badge: 'Most Popular',
         description: 'A 28sqm sanctuary featuring contemporary design, plush queen bed, and city views.',
@@ -21,7 +21,7 @@ const ROOMS_DATA = [
     },
     {
         id: 'RM-DLX-002',
-        name: 'Deluxe Twin',
+        name: 'Double Room',
         type: 'deluxe',
         description: 'Spacious 30sqm twin room ideal for friends or business associates traveling together.',
         size: '30 m²',
@@ -34,7 +34,7 @@ const ROOMS_DATA = [
     },
     {
         id: 'RM-PRM-001',
-        name: 'Premier King',
+        name: 'King',
         type: 'premier',
         badge: 'Best Value',
         description: 'Elevated comfort with a king-size bed, lounge area, and panoramic Meru township views.',
@@ -48,7 +48,7 @@ const ROOMS_DATA = [
     },
     {
         id: 'RM-PRM-002',
-        name: 'Premier Family',
+        name: 'Family Room',
         type: 'premier',
         description: 'A welcoming retreat for families, featuring two queen beds and ample living space.',
         size: '42 m²',
@@ -75,7 +75,7 @@ const ROOMS_DATA = [
     },
     {
         id: 'RM-STE-002',
-        name: 'Casuarina Suite',
+        name: 'Quest Suite',
         type: 'suite',
         badge: 'Signature',
         description: 'Our signature suite — 75sqm of refined luxury with private balcony and panoramic vistas.',
