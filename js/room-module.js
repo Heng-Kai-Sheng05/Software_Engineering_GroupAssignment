@@ -135,7 +135,7 @@ const RoomModule = (function() {
             `;
             return;
         }
-        container.innerHTML = data.map(createRoomCard).join('');
+        container.innerHTML = data.map(r => publicAPI.createRoomCard(r)).join('');
     }
 
     /**
@@ -145,7 +145,7 @@ const RoomModule = (function() {
         return [...ROOMS_DATA];
     }
 
-    return {
+    const publicAPI = {
         getRoomById,
         getAllRooms,
         searchRooms,
@@ -154,6 +154,7 @@ const RoomModule = (function() {
         renderRooms,
         createRoomCard
     };
+    return publicAPI;
 })();
 
 window.RoomModule = RoomModule;

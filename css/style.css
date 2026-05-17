@@ -579,10 +579,20 @@ img {
     .datepicker { flex-direction: column; }
     .datepicker-panel { width: 100%; }
 }
+.section-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+}
+.section-header .section-tag {
+    display: inline-block;
+    margin-bottom: 1rem;
+}
+
 .section-title {
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 300;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
+    line-height: 1.1;
 }
 
 .section-subtitle {
@@ -590,6 +600,7 @@ img {
     font-size: 1.05rem;
     max-width: 600px;
     margin: 0 auto;
+    line-height: 1.6;
 }
 
 .section-cta {
