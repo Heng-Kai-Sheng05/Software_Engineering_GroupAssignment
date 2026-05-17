@@ -496,9 +496,9 @@ img {
     align-items: flex-start;
 }
 .datepicker-panel {
-    width: 260px;
-    flex: 0 0 260px; /* prefer fixed panel width, avoid unwanted shrinking */
-    overflow: hidden; /* prevent child elements (days) from overflowing the header area */
+    width: 308px;
+    flex: 0 0 308px; /* fit 7 columns of 36px day cells + 6 gaps of 0.5rem */
+    overflow: hidden;
 }
 .datepicker-header {
     display: flex;
@@ -536,10 +536,11 @@ img {
 }
 .datepicker-grid {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(0, 1fr));
     gap: 0.5rem;
     position: relative;
     z-index: 1;
+    justify-items: center;
 }
 .datepicker-day {
     width: 36px;

@@ -28,7 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // ---------- Quick Search Form ----------
     const searchForm = document.getElementById('quickSearchForm');
     if (searchForm) {
-        // Set default dates: today + 1 day
+        // Format dates in local time to avoid UTC drift when run near midnight.
+        const toLocalISO = (d) => {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        };
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
@@ -57,8 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (criteria.adults != null) document.getElementById('adults').value = criteria.adults;
             if (criteria.children != null) document.getElementById('children').value = criteria.children;
         } else {
-            document.getElementById('checkIn').value = tomorrow.toISOString().split('T')[0];
-            document.getElementById('checkOut').value = dayAfter.toISOString().split('T')[0];
+            const checkInEl = document.getElementById('checkIn');
+            const checkOutEl = document.getElementById('checkOut');
+            checkInEl.value = toLocalISO(tomorrow);
+            checkOutEl.value = toLocalISO(dayAfter);
+            checkInEl.dataset.iso = checkInEl.value;
+            checkOutEl.dataset.iso = checkOutEl.value;
             persistSearchCriteria();
         }
 
