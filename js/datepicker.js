@@ -1,6 +1,20 @@
 (function(){
     'use strict';
 
+    // Helpers: avoid UTC drift by formatting/parsing dates in local time.
+    function toISOLocal(d){
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+    function parseISOLocal(iso){
+        if (!iso) return null;
+        const parts = String(iso).split('-').map(Number);
+        if (parts.length !== 3 || parts.some(isNaN)) return null;
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+    }
+
     // Minimal two-month range datepicker attached to inputs with IDs checkIn/checkOut
     class DateRangePicker {
         constructor(opts = {}){
@@ -92,11 +106,11 @@
             const left = rect.left + window.pageXOffset;
             const top = rect.bottom + scrollY + 8;
 
-            // estimate picker width (fallback to panels * 260 + gaps + padding)
+            // estimate picker width (panels * 308 + gaps + padding)
             const panelCount = this.container.querySelectorAll('.datepicker-panel').length || 2;
             const gap = 16; // 1rem gap assumed (root font-size 16px)
             const paddingTotal = 32; // 1rem left + 1rem right
-            const pickerW = panelCount * 260 + (panelCount - 1) * gap + paddingTotal;
+            const pickerW = panelCount * 308 + (panelCount - 1) * gap + paddingTotal;
             const viewportW = window.innerWidth || document.documentElement.clientWidth;
             let clampedLeft = left;
             if (left + pickerW + 8 > viewportW) {
@@ -182,23 +196,27 @@
             const today = new Date();
             today.setHours(0,0,0,0);
 
+            // When picking check-out, disable any date on/before the chosen check-in.
+            const activeId = this.activeInput && this.activeInput.id;
+            const minDate = (activeId === 'checkOut' && this.start) ? this.start : null;
+
             for (let d=1; d<=daysInMonth; d++){
                 const dt = new Date(date.getFullYear(), date.getMonth(), d);
                 const cell = document.createElement('button');
                 cell.type = 'button';
                 cell.className = 'datepicker-day';
                 cell.textContent = d;
-                cell.dataset.date = dt.toISOString().split('T')[0];
+                cell.dataset.date = toISOLocal(dt);
 
-                // disable past dates
                 const dtZero = new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
-                if (dtZero < today) {
+                const isPast = dtZero < today;
+                const beforeCheckIn = minDate && dtZero.getTime() <= minDate.getTime();
+                if (isPast || beforeCheckIn) {
                     cell.classList.add('disabled');
                 } else {
                     cell.addEventListener('click', (e) => { e.stopPropagation(); this._onDayClick(dt); });
                 }
 
-                // mark today
                 if (dtZero.getTime() === today.getTime()) cell.classList.add('today');
 
                 grid.appendChild(cell);
@@ -211,51 +229,61 @@
         }
 
         _onDayClick(date){
-            if (!this.start || (this.start && this.end)){
-                this.start = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-                this.end = null;
-            } else {
-                const clicked = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-                if (clicked < this.start){
-                    // swap
-                    this.end = this.start;
+            const clicked = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+            const activeId = this.activeInput && this.activeInput.id;
+
+            if (activeId === 'checkOut') {
+                if (!this.start) {
+                    // No check-in yet — treat this click as setting check-in,
+                    // then switch focus to check-out for the next click.
                     this.start = clicked;
+                    this.end = null;
+                    const co = document.getElementById('checkOut');
+                    if (co) this.activeInput = co;
                 } else {
+                    // Must be strictly after check-in (same-day disallowed).
+                    if (clicked.getTime() <= this.start.getTime()) return;
                     this.end = clicked;
                 }
+            } else {
+                // Setting check-in (or fallback)
+                this.start = clicked;
+                if (this.end && this.end.getTime() <= clicked.getTime()) {
+                    this.end = null;
+                }
+                // After picking check-in, expect the user to pick check-out next.
+                const co = document.getElementById('checkOut');
+                if (co) this.activeInput = co;
             }
-            // if activeInput is checkIn and we have start only, set inputs accordingly
+
             this._updateInputsFromSelection();
             this._render();
-            // if both set, close
             if (this.start && this.end) {
                 this.close();
             }
         }
 
         _updateInputsFromSelection(){
-            const formatHuman = (iso) => {
-                const d = new Date(iso);
-                if (isNaN(d)) return iso;
-                return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+            const setInput = (inp, iso) => {
+                if (!inp) return;
+                inp.dataset.iso = iso;
+                inp.value = iso;
+                // Programmatic value assignment does not fire input/change events.
+                // Dispatch them so listeners (persistSearchCriteria, applyFilter, etc.) run.
+                inp.dispatchEvent(new Event('input', { bubbles: true }));
+                inp.dispatchEvent(new Event('change', { bubbles: true }));
             };
 
             if (this.start) {
-                const s = this.start.toISOString().split('T')[0];
-                const inp = document.getElementById('checkIn');
-                if (inp) { inp.dataset.iso = s; inp.value = formatHuman(s); }
+                setInput(document.getElementById('checkIn'), toISOLocal(this.start));
             }
             if (this.end) {
-                const e = this.end.toISOString().split('T')[0];
-                const inp2 = document.getElementById('checkOut');
-                if (inp2) { inp2.dataset.iso = e; inp2.value = formatHuman(e); }
+                setInput(document.getElementById('checkOut'), toISOLocal(this.end));
             }
             // if only start selected, set checkOut to next day default (displayed)
             if (this.start && !this.end){
                 const next = new Date(this.start.getTime()); next.setDate(next.getDate()+1);
-                const isoNext = next.toISOString().split('T')[0];
-                const inp2 = document.getElementById('checkOut');
-                if (inp2) { inp2.dataset.iso = isoNext; inp2.value = formatHuman(isoNext); }
+                setInput(document.getElementById('checkOut'), toISOLocal(next));
             }
         }
 
@@ -266,7 +294,8 @@
                 c.classList.remove('in-range','start','end');
                 const dstr = c.dataset.date;
                 if (!dstr) return;
-                const d = new Date(dstr);
+                const d = parseISOLocal(dstr);
+                if (!d) return;
                 if (this.start && this.end){
                     if (d.getTime() === this.start.getTime()) c.classList.add('start');
                     else if (d.getTime() === this.end.getTime()) c.classList.add('end');

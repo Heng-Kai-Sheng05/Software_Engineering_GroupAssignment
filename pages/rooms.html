@@ -103,16 +103,26 @@
             return original(room).replace(/pages\//g, '');
         };
 
+        const toLocalISO = (d) => {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        };
         const today = new Date();
-        const tomorrow = new Date(today);
-        tomorrow.setDate(today.getDate() + 1);
-        const dayAfter = new Date(today);
-        dayAfter.setDate(today.getDate() + 2);
+        const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
+        const dayAfter = new Date(today); dayAfter.setDate(today.getDate() + 2);
 
         const saved = sessionStorage.getItem('searchCriteria');
         const criteria = saved ? JSON.parse(saved) : {};
-        document.getElementById('checkIn').value = criteria.checkIn || tomorrow.toISOString().split('T')[0];
-        document.getElementById('checkOut').value = criteria.checkOut || dayAfter.toISOString().split('T')[0];
+        const checkInIso = criteria.checkIn || toLocalISO(tomorrow);
+        const checkOutIso = criteria.checkOut || toLocalISO(dayAfter);
+        const checkInEl = document.getElementById('checkIn');
+        const checkOutEl = document.getElementById('checkOut');
+        checkInEl.value = checkInIso;
+        checkOutEl.value = checkOutIso;
+        checkInEl.dataset.iso = checkInIso;
+        checkOutEl.dataset.iso = checkOutIso;
         if (criteria.adults != null) document.getElementById('adults').value = criteria.adults;
         else if (criteria.guests) document.getElementById('adults').value = criteria.guests;
         if (criteria.children != null) document.getElementById('children').value = criteria.children;
