@@ -89,8 +89,11 @@ const RoomModule = (function() {
      */
     function createRoomCard(room) {
         const badgeHTML = room.badge ? `<span class="room-badge">${room.badge}</span>` : '';
+        const bookingPath = window.location.pathname.includes('/pages/')
+            ? 'booking.html'
+            : '/pages/booking.html';
         return `
-            <div class="room-card" onclick="window.location.href='pages/booking.html?roomId=${room.id}'">
+            <div class="room-card" onclick="window.location.href='${bookingPath}?roomId=${room.id}'">
                 <div class="room-image" style="background-image: url('${room.image}')">
                     ${badgeHTML}
                 </div>
@@ -107,7 +110,7 @@ const RoomModule = (function() {
                             <strong>RM ${room.price}</strong>
                             <span>per night</span>
                         </div>
-                        <button class="btn-book" onclick="event.stopPropagation(); window.location.href='pages/booking.html?roomId=${room.id}'">
+                        <button class="btn-book" type="button" onclick="window.location.href='${bookingPath}?roomId=${room.id}'">
                             Book Now
                         </button>
                     </div>
