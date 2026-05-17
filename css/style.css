@@ -1242,6 +1242,15 @@ img {
     margin: 0 0 1rem;
 }
 
+.results-meta {
+    margin-bottom: 1.75rem;
+    color: var(--color-muted);
+    font-size: 0.95rem;
+}
+.results-meta strong {
+    color: var(--color-ink);
+}
+
 @keyframes slideIn {
     from { transform: translateX(120%); }
     to { transform: translateX(0); }
