@@ -711,6 +711,108 @@ img {
     background: var(--color-bg-alt);
 }
 
+/* Quick Search / Filter Card (positioning and spacing) */
+.quick-search {
+    background: transparent;
+    margin-top: 1.5rem;
+}
+.search-card {
+    max-width: 1180px;
+    margin: 1.75rem auto 1.5rem;
+    background: var(--color-bg);
+    border: 1px solid transparent;
+    border-radius: 1rem;
+    padding: 1.75rem 1.5rem;
+    box-shadow: 0 40px 80px rgba(26,22,18,0.08);
+}
+.search-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    margin: 0 0 0.75rem 0;
+    color: var(--color-ink);
+}
+.search-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 140px 120px 220px;
+    gap: 1.25rem;
+    align-items: center;
+}
+.search-form .form-group {
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+}
+.search-form .form-group:not(:last-child):not(:first-child) {
+    border-right: 1px solid var(--color-line);
+}
+.search-form .form-group label {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin-bottom: 0.5rem;
+}
+.date-input {
+    position: relative;
+}
+.date-input input {
+    width: 100%;
+    padding: 0.25rem 2.5rem 0.25rem 0;
+    border: none;
+    background: transparent;
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--color-ink);
+}
+.date-input .input-icon,
+.date-toggle {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: var(--color-muted);
+    font-size: 1rem;
+}
+.search-form input[type="number"] {
+    width: 72px;
+    padding: 0.5rem 0.6rem;
+    border: 1px solid var(--color-line);
+    border-radius: 6px;
+    text-align: center;
+    font-family: var(--font-body);
+}
+.btn-search {
+    justify-self: end;
+    padding: 0.9rem 1.75rem;
+    border-radius: 6px;
+    background: var(--color-gold);
+    color: var(--color-bg);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    border: none;
+    position: relative;
+}
+.btn-search::after {
+    content: '';
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    bottom: -10px;
+    height: 2px;
+    background: rgba(0,0,0,0.06);
+}
+
+@media (max-width: 980px) {
+    .search-card { margin: 0.75rem auto 1rem; }
+    .search-form { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 560px) {
+    .search-card { margin: 0.5rem auto 1rem; }
+    .search-form { grid-template-columns: 1fr; }
+}
+
 .rooms-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
