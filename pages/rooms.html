@@ -103,6 +103,51 @@
 
         RoomModule.renderRooms('roomsContainer', RoomModule.getAllRooms());
 
+        const today = new Date();
+        const tomorrow = new Date(today);
+        tomorrow.setDate(today.getDate() + 1);
+        const dayAfter = new Date(today);
+        dayAfter.setDate(today.getDate() + 2);
+
+        const saved = sessionStorage.getItem('searchCriteria');
+        const criteria = saved ? JSON.parse(saved) : {};
+        document.getElementById('checkIn').value = criteria.checkIn || tomorrow.toISOString().split('T')[0];
+        document.getElementById('checkOut').value = criteria.checkOut || dayAfter.toISOString().split('T')[0];
+        if (criteria.adults != null) document.getElementById('adults').value = criteria.adults;
+        else if (criteria.guests) document.getElementById('adults').value = criteria.guests;
+        if (criteria.children != null) document.getElementById('children').value = criteria.children;
+
+        function persistSearchCriteria() {
+            const adults = parseInt(document.getElementById('adults').value, 10) || 1;
+            const children = parseInt(document.getElementById('children').value, 10) || 0;
+            const checkInEl = document.getElementById('checkIn');
+            const checkOutEl = document.getElementById('checkOut');
+            sessionStorage.setItem('searchCriteria', JSON.stringify({
+                checkIn: checkInEl.dataset.iso || checkInEl.value,
+                checkOut: checkOutEl.dataset.iso || checkOutEl.value,
+                adults,
+                children,
+                guests: String(adults + children)
+            }));
+        }
+
+        persistSearchCriteria();
+
+        ['checkIn', 'checkOut', 'adults', 'children'].forEach(id => {
+            document.getElementById(id).addEventListener('change', persistSearchCriteria);
+        });
+
+        document.getElementById('quickSearchForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            persistSearchCriteria();
+            const criteria = JSON.parse(sessionStorage.getItem('searchCriteria'));
+            const dateCheck = RoomModule.validateDates(criteria.checkIn, criteria.checkOut);
+            if (!dateCheck.valid) {
+                alert(dateCheck.message);
+                return;
+            }
+        });
+
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
             if (window.scrollY > 50) nav.classList.add('scrolled');

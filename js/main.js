@@ -27,27 +27,47 @@ document.addEventListener('DOMContentLoaded', () => {
         const dayAfter = new Date(today);
         dayAfter.setDate(today.getDate() + 2);
 
-        document.getElementById('checkIn').value = tomorrow.toISOString().split('T')[0];
-        document.getElementById('checkOut').value = dayAfter.toISOString().split('T')[0];
-        document.getElementById('checkIn').min = today.toISOString().split('T')[0];
+        function persistSearchCriteria() {
+            const adults = parseInt(document.getElementById('adults').value, 10) || 1;
+            const children = parseInt(document.getElementById('children').value, 10) || 0;
+            const checkInEl = document.getElementById('checkIn');
+            const checkOutEl = document.getElementById('checkOut');
+            sessionStorage.setItem('searchCriteria', JSON.stringify({
+                checkIn: checkInEl.dataset.iso || checkInEl.value,
+                checkOut: checkOutEl.dataset.iso || checkOutEl.value,
+                adults,
+                children,
+                guests: String(adults + children)
+            }));
+        }
+
+        const saved = sessionStorage.getItem('searchCriteria');
+        if (saved) {
+            const criteria = JSON.parse(saved);
+            if (criteria.checkIn) document.getElementById('checkIn').value = criteria.checkIn;
+            if (criteria.checkOut) document.getElementById('checkOut').value = criteria.checkOut;
+            if (criteria.adults != null) document.getElementById('adults').value = criteria.adults;
+            if (criteria.children != null) document.getElementById('children').value = criteria.children;
+        } else {
+            document.getElementById('checkIn').value = tomorrow.toISOString().split('T')[0];
+            document.getElementById('checkOut').value = dayAfter.toISOString().split('T')[0];
+            persistSearchCriteria();
+        }
+
+        ['checkIn', 'checkOut', 'adults', 'children'].forEach(id => {
+            document.getElementById(id).addEventListener('change', persistSearchCriteria);
+        });
 
         searchForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const criteria = {
-                checkIn: document.getElementById('checkIn').value,
-                checkOut: document.getElementById('checkOut').value,
-                guests: document.getElementById('guests').value,
-                roomType: document.getElementById('roomType').value
-            };
-            // Validate dates first
+            persistSearchCriteria();
+            const criteria = JSON.parse(sessionStorage.getItem('searchCriteria'));
             const dateCheck = RoomModule.validateDates(criteria.checkIn, criteria.checkOut);
             if (!dateCheck.valid) {
                 showToast(dateCheck.message, 'error');
                 return;
             }
-            // Save criteria to sessionStorage and navigate
-            sessionStorage.setItem('searchCriteria', JSON.stringify(criteria));
-            window.location.href = 'pages/search.html';
+            window.location.href = 'pages/rooms.html';
         });
     }
 
