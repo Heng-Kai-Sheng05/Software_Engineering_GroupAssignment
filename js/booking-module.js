@@ -113,6 +113,8 @@ const BookingModule = (function() {
             checkOut: bookingData.checkOut,
             nights: pricing.nights,
             guests: bookingData.guests || 1,
+            adults: bookingData.adults ?? bookingData.guests ?? 1,
+            children: bookingData.children ?? 0,
             guestName: bookingData.guestName.trim(),
             guestEmail: bookingData.guestEmail.toLowerCase().trim(),
             guestPhone: bookingData.guestPhone.trim(),

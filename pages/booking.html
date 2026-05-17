@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Complete Your Booking — Hotel Quest</title>
+    <title>Complete Your Booking ? Hotel Quest</title>
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -27,7 +27,7 @@
 
     <header class="page-header">
         <div class="container">
-            <span class="section-tag">— Reservation</span>
+            <span class="section-tag">Reservation</span>
             <h1>Complete your <em>booking</em></h1>
             <p id="roomHeaderInfo">Review your selection and provide guest details</p>
         </div>
@@ -36,82 +36,154 @@
     <section class="booking-section">
         <div class="container">
             <div class="booking-layout" id="bookingLayout">
-                <!-- Booking Form -->
                 <div class="booking-form-card">
-                    <h3 style="margin-bottom: 1.5rem; font-size: 1.75rem;">Guest Details</h3>
-                    <form id="bookingForm">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Check-In Date</label>
-                                <input type="date" id="checkIn" required>
+                    <form id="bookingForm" class="booking-form">
+                        <div class="booking-form-block">
+                            <h3 class="booking-form-title">Guest Details</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Check-In Date</label>
+                                    <input type="text" id="checkIn" required readonly class="input-locked" tabindex="-1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Check-Out Date</label>
+                                    <input type="text" id="checkOut" required readonly class="input-locked" tabindex="-1">
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label>Check-Out Date</label>
-                                <input type="date" id="checkOut" required>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Number of Guests</label>
-                                <select id="guests">
-                                    <option value="1">1 Adult</option>
-                                    <option value="2" selected>2 Adults</option>
-                                    <option value="3">3 Adults</option>
-                                    <option value="4">4 Adults</option>
-                                </select>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Adult(s)</label>
+                                    <input type="number" id="adults" min="1" max="8" value="1" required readonly class="input-locked" tabindex="-1">
+                                </div>
+                                <div class="form-group">
+                                    <label>Children</label>
+                                    <input type="number" id="children" min="0" max="4" value="0" required readonly class="input-locked" tabindex="-1">
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label>Special Requests</label>
                                 <input type="text" id="specialRequests" placeholder="Optional">
                             </div>
+                            <a href="rooms.html" class="btn-outline booking-edit-btn">Edit</a>
                         </div>
 
-                        <h3 style="margin: 2rem 0 1.5rem; font-size: 1.5rem; padding-top: 2rem; border-top: 1px solid var(--color-line);">Contact Information</h3>
-                        <div class="form-group" style="margin-bottom: 1.25rem;">
-                            <label>Full Name *</label>
-                            <input type="text" id="guestName" required placeholder="e.g. Kai Sheng Lim">
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Email *</label>
-                                <input type="email" id="guestEmail" required placeholder="you@example.com">
-                            </div>
-                            <div class="form-group">
-                                <label>Phone *</label>
-                                <input type="tel" id="guestPhone" required placeholder="+60 12-345 6789">
-                            </div>
-                        </div>
-
-                        <h3 style="margin: 2rem 0 1rem; font-size: 1.5rem; padding-top: 2rem; border-top: 1px solid var(--color-line);">Payment Method</h3>
-                        <div class="payment-methods">
-                            <div class="payment-option active" data-method="credit_card">💳 Credit Card</div>
-                            <div class="payment-option" data-method="fpx">🏦 FPX Online</div>
-                            <div class="payment-option" data-method="ewallet">📱 E-Wallet</div>
-                        </div>
-                        <div id="cardFields">
-                            <div class="form-group" style="margin-bottom: 1rem;">
-                                <label>Card Number</label>
-                                <input type="text" id="cardNumber" placeholder="4111 1111 1111 1111" maxlength="19">
+                        <div class="booking-form-block">
+                            <h3 class="booking-form-title">Contact Information</h3>
+                            <div class="contact-grid">
+                                <div class="form-group">
+                                    <label>Salutation</label>
+                                    <select id="salutation">
+                                        <option value="Mr.">Mr.</option>
+                                        <option value="Ms.">Ms.</option>
+                                        <option value="Mrs.">Mrs.</option>
+                                        <option value="Mdm.">Mdm.</option>
+                                        <option value="Dr.">Dr.</option>
+                                        <option value="Prof.">Prof.</option>
+                                        <option value="Datuk">Datuk</option>
+                                        <option value="Datin">Datin</option>
+                                        <option value="Sir">Sir</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>First Name <span class="required">*</span></label>
+                                    <input type="text" id="firstName" required placeholder="First name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name <span class="required">*</span></label>
+                                    <input type="text" id="lastName" required placeholder="Last name">
+                                </div>
+                                <div class="form-group">
+                                    <label>City <span class="required">*</span></label>
+                                    <input type="text" id="city" required placeholder="e.g. Kuala Lumpur">
+                                </div>
+                                <div class="form-group">
+                                    <label>Country <span class="required">*</span></label>
+                                    <select id="country" required>
+                                        <option value="Malaysia" selected>Malaysia</option>
+                                        <option value="Singapore">Singapore</option>
+                                        <option value="Indonesia">Indonesia</option>
+                                        <option value="Thailand">Thailand</option>
+                                        <option value="Brunei">Brunei</option>
+                                        <option value="Philippines">Philippines</option>
+                                        <option value="Vietnam">Vietnam</option>
+                                        <option value="China">China</option>
+                                        <option value="Hong Kong">Hong Kong</option>
+                                        <option value="Taiwan">Taiwan</option>
+                                        <option value="Japan">Japan</option>
+                                        <option value="South Korea">South Korea</option>
+                                        <option value="India">India</option>
+                                        <option value="Australia">Australia</option>
+                                        <option value="United Kingdom">United Kingdom</option>
+                                        <option value="United States">United States</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="form-group">
-                                    <label>Expiry</label>
-                                    <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+                                    <label>Phone Number</label>
+                                    <div class="phone-input">
+                                        <select id="phoneCode" class="phone-code">
+                                            <option value="+60" selected>+60</option>
+                                            <option value="+65">+65</option>
+                                            <option value="+62">+62</option>
+                                            <option value="+66">+66</option>
+                                            <option value="+673">+673</option>
+                                            <option value="+63">+63</option>
+                                            <option value="+84">+84</option>
+                                            <option value="+86">+86</option>
+                                            <option value="+852">+852</option>
+                                            <option value="+886">+886</option>
+                                            <option value="+81">+81</option>
+                                            <option value="+82">+82</option>
+                                            <option value="+91">+91</option>
+                                            <option value="+61">+61</option>
+                                            <option value="+44">+44</option>
+                                            <option value="+1">+1</option>
+                                        </select>
+                                        <input type="tel" id="guestPhone" placeholder="12-345 6789">
+                                    </div>
                                 </div>
                                 <div class="form-group">
-                                    <label>CVV</label>
-                                    <input type="text" id="cardCvv" placeholder="123" maxlength="4">
+                                    <label>Email <span class="required">*</span></label>
+                                    <input type="email" id="guestEmail" required placeholder="you@example.com">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Flight No. / Vehicle No. / Special Request / Other Info</label>
+                                <textarea id="otherInfo" rows="3" placeholder="e.g. MH123, arrival 9pm, vegetarian meals..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="booking-form-block">
+                            <h3 class="booking-form-title">Payment Method</h3>
+                            <div class="payment-methods">
+                                <div class="payment-option active" data-method="credit_card">Credit Card</div>
+                            </div>
+                            <div id="cardFields">
+                                <div class="form-group">
+                                    <label>Card Number</label>
+                                    <input type="text" id="cardNumber" placeholder="4111 1111 1111 1111" maxlength="19">
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Expiry</label>
+                                        <input type="text" id="cardExpiry" placeholder="MM/YY" maxlength="5">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>CVV</label>
+                                        <input type="text" id="cardCvv" placeholder="123" maxlength="4">
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn-primary btn-full btn-lg" style="margin-top: 2rem;">
-                            Confirm Booking →
+                        <button type="submit" class="btn-primary btn-full btn-lg booking-submit">
+                            Confirm Booking
                         </button>
                     </form>
                 </div>
 
-                <!-- Booking Summary (Sticky) -->
                 <div class="booking-summary" id="bookingSummary">
                     <h3>Booking Summary</h3>
                     <div id="summaryContent"></div>
@@ -123,7 +195,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom" style="border: none; padding: 0;">
-                <p>© 2026 Hotel Quest. Academic Project — BCS2073 Software Engineering, QIU.</p>
+                <p>&copy; 2026 Hotel Quest. Academic Project ? BCS2073 Software Engineering, QIU.</p>
             </div>
         </div>
     </footer>
@@ -133,142 +205,199 @@
     <script src="../js/room-module.js"></script>
     <script src="../js/booking-module.js"></script>
     <script>
-        // Parse URL parameter
-        const params = new URLSearchParams(window.location.search);
-        const roomId = params.get('roomId');
-        let room = RoomModule.getRoomById(roomId);
+        function toISODate(value) {
+            if (!value) return '';
+            if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+            const d = new Date(value);
+            if (!isNaN(d.getTime())) return d.toISOString().split('T')[0];
+            return '';
+        }
 
-        if (!room) {
-            document.querySelector('.booking-section .container').innerHTML = `
-                <div class="empty-state">
-                    <h3>Room not found</h3>
-                    <p>Please <a href="rooms.html" style="color: var(--color-accent)">browse our rooms</a> first.</p>
-                </div>
-            `;
-        } else {
-            document.getElementById('roomHeaderInfo').innerHTML = `You selected: <strong>${room.name}</strong>`;
+        function formatDisplayDate(iso) {
+            if (!iso) return '';
+            const d = new Date(iso + 'T00:00:00');
+            if (isNaN(d.getTime())) return iso;
+            return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
+        }
 
-            // Restore search criteria if available
+        function getStoredDateISO(el, fallback) {
+            return el.dataset.iso || toISODate(el.value) || toISODate(fallback) || '';
+        }
+
+        (function initBookingPage() {
+            const params = new URLSearchParams(window.location.search);
+            const roomId = params.get('roomId');
+            const room = RoomModule.getRoomById(roomId);
+
+            if (!room) {
+                document.querySelector('.booking-section .container').innerHTML =
+                    '<div class="empty-state"><h3>Room not found</h3>' +
+                    '<p>Please <a href="rooms.html" style="color: var(--color-accent)">browse our rooms</a> first.</p></div>';
+                return;
+            }
+
             const saved = sessionStorage.getItem('searchCriteria');
-            const criteria = saved ? JSON.parse(saved) : {};
-            const today = new Date();
-            const tomorrow = new Date(today); tomorrow.setDate(today.getDate() + 1);
-            const dayAfter = new Date(today); dayAfter.setDate(today.getDate() + 2);
+            if (!saved) {
+                alert('Please select your dates and guests from the home or rooms page first.');
+                window.location.href = 'rooms.html';
+                return;
+            }
 
-            document.getElementById('checkIn').value = criteria.checkIn || tomorrow.toISOString().split('T')[0];
-            document.getElementById('checkOut').value = criteria.checkOut || dayAfter.toISOString().split('T')[0];
-            document.getElementById('checkIn').min = today.toISOString().split('T')[0];
-            if (criteria.guests) document.getElementById('guests').value = criteria.guests;
+            const criteria = JSON.parse(saved);
+            const checkInISO = toISODate(criteria.checkIn);
+            const checkOutISO = toISODate(criteria.checkOut);
+            if (!checkInISO || !checkOutISO) {
+                alert('Please select your dates and guests from the home or rooms page first.');
+                window.location.href = 'rooms.html';
+                return;
+            }
 
-            // Pre-fill if logged in
+            const adults = criteria.adults != null
+                ? parseInt(criteria.adults, 10)
+                : (criteria.guests ? parseInt(criteria.guests, 10) : 1);
+            const children = criteria.children != null ? parseInt(criteria.children, 10) : 0;
+
+            document.getElementById('roomHeaderInfo').innerHTML =
+                'You selected: <strong>' + room.name + '</strong>';
+
+            const checkInEl = document.getElementById('checkIn');
+            const checkOutEl = document.getElementById('checkOut');
+            checkInEl.dataset.iso = checkInISO;
+            checkOutEl.dataset.iso = checkOutISO;
+            checkInEl.value = formatDisplayDate(checkInISO);
+            checkOutEl.value = formatDisplayDate(checkOutISO);
+            document.getElementById('adults').value = Math.max(adults, 1);
+            document.getElementById('children').value = Math.max(children, 0);
+
             const user = UserModule.getCurrentUser();
             if (user) {
-                document.getElementById('guestName').value = user.name;
-                document.getElementById('guestEmail').value = user.email;
+                const parts = (user.name || '').trim().split(/\s+/);
+                document.getElementById('firstName').value = parts.shift() || '';
+                document.getElementById('lastName').value = parts.join(' ');
+                document.getElementById('guestEmail').value = user.email || '';
+            }
+
+            function updateSummary() {
+                const checkIn = getStoredDateISO(checkInEl, criteria.checkIn);
+                const checkOut = getStoredDateISO(checkOutEl, criteria.checkOut);
+                const adultsCount = parseInt(document.getElementById('adults').value, 10);
+                const childrenCount = parseInt(document.getElementById('children').value, 10);
+                const dateCheck = RoomModule.validateDates(checkIn, checkOut);
+                const nights = dateCheck.valid ? dateCheck.nights : 1;
+                const pricing = BookingModule.calculateTotal(room.price, nights);
+                const guestLabel = adultsCount + ' adult' + (adultsCount !== 1 ? 's' : '') +
+                    ', ' + childrenCount + ' child' + (childrenCount !== 1 ? 'ren' : '');
+
+                document.getElementById('summaryContent').innerHTML =
+                    '<div class="summary-room">' +
+                        '<div class="summary-room-image" style="background-image:url(\'' + room.image + '\')"></div>' +
+                        '<div>' +
+                            '<h4 class="summary-room-name">' + room.name + '</h4>' +
+                            '<p class="summary-room-meta">' + room.bed + ' &middot; ' + room.size + '</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="summary-row"><span>Check-in</span><span>' + formatDisplayDate(checkIn) + '</span></div>' +
+                    '<div class="summary-row"><span>Check-out</span><span>' + formatDisplayDate(checkOut) + '</span></div>' +
+                    '<div class="summary-row"><span>Guests</span><span>' + guestLabel + '</span></div>' +
+                    '<div class="summary-row"><span>Nights</span><span>' + nights + '</span></div>' +
+                    '<div class="summary-row"><span>Rate per night</span><span>RM ' + room.price.toFixed(2) + '</span></div>' +
+                    '<div class="summary-row"><span>Subtotal</span><span>RM ' + (pricing.subtotal != null ? pricing.subtotal.toFixed(2) : '0.00') + '</span></div>' +
+                    '<div class="summary-row"><span>Service Tax (6%)</span><span>RM ' + (pricing.tax != null ? pricing.tax.toFixed(2) : '0.00') + '</span></div>' +
+                    '<div class="summary-row"><span>Tourism Tax</span><span>RM ' + (pricing.tourismTax != null ? pricing.tourismTax.toFixed(2) : '0.00') + '</span></div>' +
+                    '<div class="summary-row total"><span>Total</span><span>RM ' + (pricing.total != null ? pricing.total.toFixed(2) : '0.00') + '</span></div>';
             }
 
             updateSummary();
 
-            // Update summary when dates change
-            ['checkIn', 'checkOut', 'guests'].forEach(id => {
-                document.getElementById(id).addEventListener('change', updateSummary);
-            });
-
-            function updateSummary() {
-                const checkIn = document.getElementById('checkIn').value;
-                const checkOut = document.getElementById('checkOut').value;
-                const dateCheck = RoomModule.validateDates(checkIn, checkOut);
-                const nights = dateCheck.valid ? dateCheck.nights : 1;
-                const pricing = BookingModule.calculateTotal(room.price, nights);
-
-                document.getElementById('summaryContent').innerHTML = `
-                    <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--color-line);">
-                        <div style="width: 80px; height: 80px; background: url('${room.image}') center/cover; border-radius: 8px; flex-shrink: 0;"></div>
-                        <div>
-                            <h4 style="font-family: var(--font-body); font-weight: 600; margin-bottom: 0.25rem;">${room.name}</h4>
-                            <p style="font-size: 0.8rem; color: var(--color-muted);">${room.bed} · ${room.size}</p>
-                        </div>
-                    </div>
-                    <div class="summary-row"><span>Check-in</span><span>${checkIn || '—'}</span></div>
-                    <div class="summary-row"><span>Check-out</span><span>${checkOut || '—'}</span></div>
-                    <div class="summary-row"><span>Nights</span><span>${nights}</span></div>
-                    <div class="summary-row"><span>Rate per night</span><span>RM ${room.price.toFixed(2)}</span></div>
-                    <div class="summary-row"><span>Subtotal</span><span>RM ${pricing.subtotal?.toFixed(2) || '0.00'}</span></div>
-                    <div class="summary-row"><span>Service Tax (6%)</span><span>RM ${pricing.tax?.toFixed(2) || '0.00'}</span></div>
-                    <div class="summary-row"><span>Tourism Tax</span><span>RM ${pricing.tourismTax?.toFixed(2) || '0.00'}</span></div>
-                    <div class="summary-row total"><span>Total</span><span>RM ${pricing.total?.toFixed(2) || '0.00'}</span></div>
-                `;
-            }
-
-            // Payment method toggle
-            document.querySelectorAll('.payment-option').forEach(opt => {
-                opt.addEventListener('click', () => {
-                    document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('active'));
+            document.querySelectorAll('.payment-option').forEach(function(opt) {
+                opt.addEventListener('click', function() {
+                    document.querySelectorAll('.payment-option').forEach(function(o) {
+                        o.classList.remove('active');
+                    });
                     opt.classList.add('active');
-                    document.getElementById('cardFields').style.display = 
+                    document.getElementById('cardFields').style.display =
                         opt.dataset.method === 'credit_card' ? 'block' : 'none';
                 });
             });
 
-            // Card number formatting
-            document.getElementById('cardNumber').addEventListener('input', (e) => {
-                let v = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+            document.getElementById('cardNumber').addEventListener('input', function(e) {
+                var v = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
                 e.target.value = v.replace(/(\d{4})/g, '$1 ').trim();
             });
 
-            // Form submission
-            document.getElementById('bookingForm').addEventListener('submit', (e) => {
+            document.getElementById('bookingForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                const method = document.querySelector('.payment-option.active').dataset.method;
-                const bookingData = {
+                var method = document.querySelector('.payment-option.active').dataset.method;
+                var adultsVal = parseInt(document.getElementById('adults').value, 10);
+                var childrenVal = parseInt(document.getElementById('children').value, 10);
+                var salutation = document.getElementById('salutation').value;
+                var firstName = document.getElementById('firstName').value.trim();
+                var lastName = document.getElementById('lastName').value.trim();
+                var city = document.getElementById('city').value.trim();
+                var country = document.getElementById('country').value;
+                var phoneCode = document.getElementById('phoneCode').value;
+                var phoneNumber = document.getElementById('guestPhone').value.trim();
+                var otherInfo = document.getElementById('otherInfo').value.trim();
+                var specialRequestsField = document.getElementById('specialRequests');
+                var specialRequests = specialRequestsField ? specialRequestsField.value.trim() : '';
+                var combinedRequests = [specialRequests, otherInfo].filter(Boolean).join(' | ');
+                var fullName = [salutation, firstName, lastName].filter(Boolean).join(' ');
+                var fullPhone = phoneNumber ? (phoneCode + ' ' + phoneNumber) : '';
+
+                var bookingData = {
                     roomId: room.id,
                     userId: user ? user.id : 'GUEST',
-                    checkIn: document.getElementById('checkIn').value,
-                    checkOut: document.getElementById('checkOut').value,
-                    guests: parseInt(document.getElementById('guests').value),
-                    guestName: document.getElementById('guestName').value,
+                    checkIn: getStoredDateISO(checkInEl, criteria.checkIn),
+                    checkOut: getStoredDateISO(checkOutEl, criteria.checkOut),
+                    adults: adultsVal,
+                    children: childrenVal,
+                    guests: adultsVal + childrenVal,
+                    salutation: salutation,
+                    firstName: firstName,
+                    lastName: lastName,
+                    city: city,
+                    country: country,
+                    guestName: fullName,
                     guestEmail: document.getElementById('guestEmail').value,
-                    guestPhone: document.getElementById('guestPhone').value,
-                    specialRequests: document.getElementById('specialRequests').value,
+                    guestPhone: fullPhone,
+                    otherInfo: otherInfo,
+                    specialRequests: combinedRequests,
                     paymentMethod: method
                 };
 
-                // Validate booking
-                const result = BookingModule.createBooking(bookingData);
+                var result = BookingModule.createBooking(bookingData);
                 if (!result.success) {
-                    alert('⚠️ ' + result.message);
+                    alert(result.message);
                     return;
                 }
 
-                // Process payment
-                const cardNum = document.getElementById('cardNumber').value;
-                const payment = BookingModule.processPayment(
-                    result.booking.pricing.total, 
-                    method, 
+                var cardNum = document.getElementById('cardNumber').value;
+                var payment = BookingModule.processPayment(
+                    result.booking.pricing.total,
+                    method,
                     method === 'credit_card' ? cardNum : null
                 );
 
                 if (!payment.success) {
-                    alert('⚠️ Payment failed: ' + payment.message);
+                    alert('Payment failed: ' + payment.message);
                     BookingModule.cancelBooking(result.booking.id);
                     return;
                 }
 
-                // Redirect to confirmation
                 sessionStorage.setItem('lastBookingId', result.booking.id);
                 window.location.href = 'confirmation.html?bookingId=' + result.booking.id;
             });
-        }
+        })();
 
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
+        window.addEventListener('scroll', function() {
+            var nav = document.getElementById('navbar');
             if (window.scrollY > 50) nav.classList.add('scrolled');
             else nav.classList.remove('scrolled');
         });
 
-        const loginBtn = document.getElementById('loginBtn');
-        const u = UserModule.getCurrentUser();
-        if (u) loginBtn.textContent = `Hi, ${u.name.split(' ')[0]}`;
+        var loginBtn = document.getElementById('loginBtn');
+        var u = UserModule.getCurrentUser();
+        if (u) loginBtn.textContent = 'Hi, ' + u.name.split(' ')[0];
     </script>
 </body>
 </html>
