@@ -171,6 +171,7 @@ const BookingModule = (function() {
         all[index].checkOut = newCheckOut;
         all[index].nights = dateCheck.nights;
         all[index].pricing = pricing;
+        all[index].status = 'in_progress';
         all[index].modifiedAt = new Date().toISOString();
         localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
         return { success: true, message: 'Booking modified', booking: all[index] };

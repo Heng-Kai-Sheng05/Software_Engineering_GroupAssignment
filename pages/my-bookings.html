@@ -39,6 +39,45 @@
         </div>
     </section>
 
+    <div class="modal" id="modifyModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modifyModalClose" aria-label="Close">&times;</button>
+            <h3>Modify Dates</h3>
+            <p class="modal-sub">Choose new check-in and check-out dates for your stay.</p>
+            <div id="modifyCurrentInfo" class="modify-current"></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>New Check-in</label>
+                    <input type="date" id="modifyCheckIn" required>
+                </div>
+                <div class="form-group">
+                    <label>New Check-out</label>
+                    <input type="date" id="modifyCheckOut" required>
+                </div>
+            </div>
+            <p id="modifyError" class="modify-error" style="display:none;"></p>
+            <div class="modal-actions">
+                <button type="button" class="btn-outline" id="modifyModalAbort">Cancel</button>
+                <button type="button" class="btn-primary" id="modifyModalConfirm">Confirm New Dates</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="cancelModal">
+        <div class="modal-content">
+            <button class="modal-close" id="cancelModalClose" aria-label="Close">&times;</button>
+            <h3>Cancel Booking</h3>
+            <p class="modal-sub">Are you sure you want to cancel this booking? This action cannot be undone.</p>
+            <p class="refund-warning">
+                <strong>Note:</strong> The hotel will only refund <strong>50%</strong> of the total amount paid.
+            </p>
+            <div class="modal-actions">
+                <button type="button" class="btn-outline" id="cancelModalAbort">Keep Booking</button>
+                <button type="button" class="btn-primary btn-danger" id="cancelModalConfirm">Confirm Cancellation</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="container">
             <div class="footer-bottom" style="border: none; padding: 0;">
@@ -76,7 +115,10 @@
             // Sort: most recent first
             bookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-            container.innerHTML = bookings.map(b => `
+            container.innerHTML = bookings.map(b => {
+                const statusLabel = (b.status || '').replace(/_/g, ' ');
+                const isCancelled = b.status === 'cancelled';
+                return `
                 <div class="booking-item">
                     <div>
                         <div style="display: flex; gap: 1.25rem; align-items: center; margin-bottom: 1rem;">
@@ -87,7 +129,7 @@
                                     ${b.checkIn} → ${b.checkOut} · ${b.nights} night${b.nights > 1 ? 's' : ''} · ${b.guests} guest${b.guests > 1 ? 's' : ''}
                                 </p>
                                 <p style="font-size: 0.8rem; color: var(--color-muted); font-family: monospace;">${b.id}</p>
-                                <span class="booking-status status-${b.status}">${b.status}</span>
+                                <span class="booking-status status-${b.status}">${statusLabel}</span>
                             </div>
                         </div>
                         <div style="display: flex; gap: 2rem; align-items: center; padding-top: 1rem; border-top: 1px solid var(--color-line); font-size: 0.85rem;">
@@ -96,34 +138,106 @@
                         </div>
                     </div>
                     <div class="booking-actions">
-                        ${b.status === 'confirmed' ? `
+                        ${isCancelled ? `
+                            <span style="font-size: 0.8rem; color: var(--color-muted);">Cancelled on ${new Date(b.cancelledAt).toLocaleDateString()}</span>
+                        ` : `
                             <button class="btn-small" onclick="modifyDates('${b.id}')">Modify Dates</button>
                             <button class="btn-small danger" onclick="cancelBooking('${b.id}')">Cancel</button>
-                        ` : `
-                            <span style="font-size: 0.8rem; color: var(--color-muted);">Cancelled on ${new Date(b.cancelledAt).toLocaleDateString()}</span>
                         `}
                     </div>
                 </div>
-            `).join('');
+            `;}).join('');
         }
 
-        function cancelBooking(id) {
-            if (!confirm('Are you sure you want to cancel this booking? This action cannot be undone.')) return;
-            const result = BookingModule.cancelBooking(id);
+        const cancelModal = document.getElementById('cancelModal');
+        let pendingCancelId = null;
+
+        function closeCancelModal() {
+            cancelModal.classList.remove('active');
+            pendingCancelId = null;
+        }
+
+        document.getElementById('cancelModalClose').addEventListener('click', closeCancelModal);
+        document.getElementById('cancelModalAbort').addEventListener('click', closeCancelModal);
+        cancelModal.addEventListener('click', (e) => {
+            if (e.target === cancelModal) closeCancelModal();
+        });
+
+        document.getElementById('cancelModalConfirm').addEventListener('click', () => {
+            if (!pendingCancelId) return;
+            const result = BookingModule.cancelBooking(pendingCancelId);
+            closeCancelModal();
             alert(result.success ? '✓ ' + result.message : '⚠️ ' + result.message);
             renderBookings();
+        });
+
+        function cancelBooking(id) {
+            pendingCancelId = id;
+            cancelModal.classList.add('active');
         }
+
+        const modifyModal = document.getElementById('modifyModal');
+        const modifyCheckInEl = document.getElementById('modifyCheckIn');
+        const modifyCheckOutEl = document.getElementById('modifyCheckOut');
+        const modifyErrorEl = document.getElementById('modifyError');
+        const modifyCurrentInfoEl = document.getElementById('modifyCurrentInfo');
+        let pendingModifyId = null;
+
+        function closeModifyModal() {
+            modifyModal.classList.remove('active');
+            modifyErrorEl.style.display = 'none';
+            modifyErrorEl.textContent = '';
+            pendingModifyId = null;
+        }
+
+        document.getElementById('modifyModalClose').addEventListener('click', closeModifyModal);
+        document.getElementById('modifyModalAbort').addEventListener('click', closeModifyModal);
+        modifyModal.addEventListener('click', (e) => {
+            if (e.target === modifyModal) closeModifyModal();
+        });
+
+        document.getElementById('modifyModalConfirm').addEventListener('click', () => {
+            if (!pendingModifyId) return;
+            const newIn = modifyCheckInEl.value;
+            const newOut = modifyCheckOutEl.value;
+            if (!newIn || !newOut) {
+                modifyErrorEl.textContent = 'Please choose both check-in and check-out dates.';
+                modifyErrorEl.style.display = 'block';
+                return;
+            }
+            const dateCheck = RoomModule.validateDates(newIn, newOut);
+            if (!dateCheck.valid) {
+                modifyErrorEl.textContent = dateCheck.message;
+                modifyErrorEl.style.display = 'block';
+                return;
+            }
+            const result = BookingModule.modifyBooking(pendingModifyId, newIn, newOut);
+            if (!result.success) {
+                modifyErrorEl.textContent = result.message;
+                modifyErrorEl.style.display = 'block';
+                return;
+            }
+            closeModifyModal();
+            alert('✓ Your request has been submitted. Please wait patiently while our staff confirms room availability, and keep an eye on your email for updates.');
+            renderBookings();
+        });
 
         function modifyDates(id) {
             const booking = BookingModule.getBookingById(id);
             if (!booking) return;
-            const newIn = prompt('New check-in date (YYYY-MM-DD):', booking.checkIn);
-            if (!newIn) return;
-            const newOut = prompt('New check-out date (YYYY-MM-DD):', booking.checkOut);
-            if (!newOut) return;
-            const result = BookingModule.modifyBooking(id, newIn, newOut);
-            alert(result.success ? '✓ Booking modified successfully' : '⚠️ ' + result.message);
-            renderBookings();
+            pendingModifyId = id;
+            modifyCurrentInfoEl.innerHTML =
+                '<span>Current:</span> <strong>' + booking.checkIn + '</strong>' +
+                ' &rarr; <strong>' + booking.checkOut + '</strong>' +
+                ' &middot; ' + booking.nights + ' night' + (booking.nights > 1 ? 's' : '');
+            modifyCheckInEl.value = booking.checkIn;
+            modifyCheckOutEl.value = booking.checkOut;
+            const today = new Date().toISOString().split('T')[0];
+            modifyCheckInEl.min = today;
+            modifyCheckOutEl.min = today;
+            modifyErrorEl.style.display = 'none';
+            modifyErrorEl.textContent = '';
+            modifyModal.classList.add('active');
         }
 
         window.cancelBooking = cancelBooking;

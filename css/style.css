@@ -1530,6 +1530,60 @@ img {
 }
 .status-confirmed { background: #e8f4e8; color: #4a7c4a; }
 .status-cancelled { background: #fce8e8; color: #a04848; }
+.status-in_progress { background: #fdf4d8; color: #8a6a1f; }
+
+.refund-warning {
+    background: #fce8e8;
+    border-left: 3px solid #c0392b;
+    color: #c0392b;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    margin: 0 0 1.5rem;
+    line-height: 1.5;
+}
+
+.modify-current {
+    background: var(--color-bg-alt);
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    margin-bottom: 1.25rem;
+}
+.modify-current strong {
+    color: var(--color-ink);
+    font-family: monospace;
+}
+.modify-error {
+    background: #fce8e8;
+    color: #a04848;
+    padding: 0.7rem 1rem;
+    border-radius: var(--radius);
+    font-size: 0.85rem;
+    margin: 0 0 1rem;
+}
+.refund-warning strong {
+    color: #a04848;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+.modal-actions .btn-outline,
+.modal-actions .btn-primary {
+    flex: 1;
+}
+.btn-primary.btn-danger {
+    background: #a04848;
+    border-color: #a04848;
+}
+.btn-primary.btn-danger:hover {
+    background: #8a3a3a;
+    border-color: #8a3a3a;
+}
 .booking-actions {
     display: flex;
     gap: 0.5rem;
