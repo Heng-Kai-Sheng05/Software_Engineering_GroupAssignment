@@ -14,6 +14,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ---------- Render rooms preview (CBSE: reuse Room Module) ----------
+    // Override card template on homepage: change "Book Now" to "See Detail"
+    // and navigate to the rooms listing page rather than booking directly.
+    const originalCreateRoomCard = RoomModule.createRoomCard;
+    RoomModule.createRoomCard = function (room) {
+        return originalCreateRoomCard(room)
+            .replace(/Book Now/g, 'See More')
+            .replace(/window\.location\.href='[^']*\?roomId=[^']*'/g, "window.location.href='pages/rooms.html'");
+    };
     const rooms = RoomModule.getAllRooms();
     RoomModule.renderRooms('roomsContainer', rooms, 3);
 
@@ -88,4 +96,3 @@ function showToast(message, type = 'info') {
 }
 
 window.showToast = showToast;
-window.updateAuthUI = updateAuthUI;
