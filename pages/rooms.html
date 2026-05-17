@@ -78,6 +78,7 @@
 
     <section class="rooms-preview" style="background: var(--color-bg); padding: 4rem 0 8rem;">
         <div class="container">
+            <div id="resultsMeta" class="results-meta"></div>
             <div class="rooms-grid" id="roomsContainer"></div>
         </div>
     </section>
@@ -102,8 +103,6 @@
             return original(room).replace(/pages\//g, '');
         };
 
-        RoomModule.renderRooms('roomsContainer', RoomModule.getAllRooms());
-
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(today.getDate() + 1);
@@ -118,35 +117,66 @@
         else if (criteria.guests) document.getElementById('adults').value = criteria.guests;
         if (criteria.children != null) document.getElementById('children').value = criteria.children;
 
-        function persistSearchCriteria() {
-            const adults = parseInt(document.getElementById('adults').value, 10) || 1;
+        function getCurrentCriteria() {
+            const adults = parseInt(document.getElementById('adults').value, 10) || 0;
             const children = parseInt(document.getElementById('children').value, 10) || 0;
             const checkInEl = document.getElementById('checkIn');
             const checkOutEl = document.getElementById('checkOut');
-            sessionStorage.setItem('searchCriteria', JSON.stringify({
+            return {
                 checkIn: checkInEl.dataset.iso || checkInEl.value,
                 checkOut: checkOutEl.dataset.iso || checkOutEl.value,
-                adults,
-                children,
-                guests: String(adults + children)
-            }));
+                adults: adults,
+                children: children,
+                guests: String(Math.max(adults + children, 1))
+            };
         }
 
-        persistSearchCriteria();
+        function persistSearchCriteria() {
+            sessionStorage.setItem('searchCriteria', JSON.stringify(getCurrentCriteria()));
+        }
+
+        function applyFilter() {
+            persistSearchCriteria();
+            const c = getCurrentCriteria();
+            const total = c.adults + c.children;
+            const rooms = RoomModule.searchRooms({ guests: c.guests });
+            const meta = document.getElementById('resultsMeta');
+            if (total <= 0) {
+                meta.innerHTML = '<strong>Please select at least 1 guest.</strong>';
+            } else if (rooms.length === 0) {
+                meta.innerHTML = '<strong>No rooms can accommodate ' + total +
+                    ' guest' + (total !== 1 ? 's' : '') +
+                    '</strong> (' + c.adults + ' adult' + (c.adults !== 1 ? 's' : '') +
+                    ', ' + c.children + ' child' + (c.children !== 1 ? 'ren' : '') +
+                    '). Try reducing the number of guests.';
+            } else {
+                meta.innerHTML = '<strong>' + rooms.length + '</strong> room' +
+                    (rooms.length !== 1 ? 's' : '') + ' available for <strong>' +
+                    total + ' guest' + (total !== 1 ? 's' : '') + '</strong> (' +
+                    c.adults + ' adult' + (c.adults !== 1 ? 's' : '') + ', ' +
+                    c.children + ' child' + (c.children !== 1 ? 'ren' : '') + ')';
+            }
+            RoomModule.renderRooms('roomsContainer', rooms);
+        }
+
+        applyFilter();
 
         ['checkIn', 'checkOut', 'adults', 'children'].forEach(id => {
-            document.getElementById(id).addEventListener('change', persistSearchCriteria);
+            const el = document.getElementById(id);
+            el.addEventListener('change', applyFilter);
+            el.addEventListener('input', applyFilter);
         });
 
         document.getElementById('quickSearchForm').addEventListener('submit', (e) => {
             e.preventDefault();
-            persistSearchCriteria();
-            const criteria = JSON.parse(sessionStorage.getItem('searchCriteria'));
-            const dateCheck = RoomModule.validateDates(criteria.checkIn, criteria.checkOut);
+            const c = getCurrentCriteria();
+            const dateCheck = RoomModule.validateDates(c.checkIn, c.checkOut);
             if (!dateCheck.valid) {
                 alert(dateCheck.message);
                 return;
             }
+            applyFilter();
+            document.getElementById('resultsMeta').scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
 
         window.addEventListener('scroll', () => {
